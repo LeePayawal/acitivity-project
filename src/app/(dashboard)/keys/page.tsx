@@ -24,10 +24,13 @@ import { Separator } from "~/components/ui/separator";
 
 export default function KeysPage() {
   const sampleApiKey = "puiqeijdiasjiduwuuwopaisksjdwossssqwwsadboiako";
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex flex-col items-center justify-start p-4 sm:p-6">
+      
+      {/* SignedOut */}
       <SignedOut>
-        <div className="relative bg-white/70 backdrop-blur-lg border border-white/30 shadow-2xl rounded-2xl p-8 max-w-md w-full text-center animate-fadeIn">
+        <div className="relative bg-white/70 backdrop-blur-lg border border-white/30 shadow-2xl rounded-2xl p-6 sm:p-8 max-w-md w-full text-center animate-fadeIn">
           <div className="flex justify-center mb-4">
             <div className="h-16 w-16 flex items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-blue-400 shadow-lg">
               <svg
@@ -46,23 +49,21 @@ export default function KeysPage() {
               </svg>
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            You&apos;re Signed Out
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">You&apos;re Signed Out</h1>
           <p className="text-gray-600 mb-6">
-            Please{" "}
-            <span className="font-semibold text-indigo-600">sign in</span> above
-            to continue.
+            Please <span className="font-semibold text-indigo-600">sign in</span> above to continue.
           </p>
         </div>
       </SignedOut>
 
+      {/* SignedIn */}
       <SignedIn>
-        <div className="mx-auto max-w-4xl space-y-6 p-6">
-          {/* Top ToolBar */}
-          <div className="flex items-center justify-between bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-white/20">
+        <div className="w-full max-w-4xl space-y-6 p-2 sm:p-6">
+
+          {/* Top Toolbar */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/70 backdrop-blur-sm rounded-xl p-4 sm:p-6 shadow-sm border border-white/20 gap-2 sm:gap-0">
             <h1 className="text-xl font-semibold text-gray-800">API KEYS</h1>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Link href={"/docs"}>
                 <Button
                   variant={"outline"}
@@ -76,8 +77,9 @@ export default function KeysPage() {
             </div>
           </div>
 
+          {/* Generate API Key Card */}
           <Card className="bg-white/70 backdrop-blur-sm border-white/20 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg">
+            <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg p-4 sm:p-6">
               <CardTitle className="text-gray-800">Generate API key</CardTitle>
               <Button
                 className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-md"
@@ -87,20 +89,19 @@ export default function KeysPage() {
                 Create
               </Button>
             </CardHeader>
-            <CardContent className="space-y-3 p-6">
-              <div>
-                <Input
-                  placeholder="Key Name (e.g. Production)"
-                  aria-label="API Key Name"
-                  className="border-gray-200 focus:border-blue-500 focus:ring-blue-200"
-                />
-              </div>
-              {/* NOT VISIBLE IF NO API KEYS EXIST */}
-              <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 shadow-sm">
+            <CardContent className="space-y-3 p-4 sm:p-6">
+              <Input
+                placeholder="Key Name (e.g. Production)"
+                aria-label="API Key Name"
+                className="w-full border-gray-200 focus:border-blue-500 focus:ring-blue-200"
+              />
+
+              {/* API Key Display */}
+              <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 shadow-sm overflow-x-auto">
                 <p className="text-sm font-medium text-blue-900 mb-2">
-                  Here is your API Key (visible once):{" "}
+                  Here is your API Key (visible once):
                 </p>
-                <div className="mt-2 flex items-center gap-2 bg-white rounded-md p-3 border">
+                <div className="flex items-center gap-2 bg-white rounded-md p-3 border min-w-[300px]">
                   <code className="text-sm break-all font-mono text-gray-700 flex-1">
                     {sampleApiKey}
                   </code>
@@ -113,12 +114,13 @@ export default function KeysPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/70 backdrop-blur-sm border-white/20 shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-t-lg">
+          {/* Existing Keys Table */}
+          <Card className="bg-white/70 backdrop-blur-sm border-white/20 shadow-lg overflow-x-auto">
+            <CardHeader className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-t-lg p-4 sm:p-6">
               <CardTitle className="text-gray-800">Your Keys</CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
-              <Table>
+            <CardContent className="p-0 overflow-x-auto">
+              <Table className="min-w-[600px]">
                 <TableHeader>
                   <TableRow className="bg-gray-50/50 border-gray-200">
                     <TableHead className="text-gray-700 font-medium">Name</TableHead>
@@ -131,9 +133,7 @@ export default function KeysPage() {
                 <TableBody>
                   <TableRow className="hover:bg-blue-50/30 transition-colors border-gray-100">
                     <TableCell className="text-gray-800 font-medium">Name of Key</TableCell>
-                    <TableCell className="font-mono text-gray-600 bg-gray-50 rounded px-2 py-1 text-sm">
-                      {sampleApiKey}
-                    </TableCell>
+                    <TableCell className="font-mono text-gray-600 bg-gray-50 rounded px-2 py-1 text-sm">{sampleApiKey}</TableCell>
                     <TableCell className="text-gray-600">8/21/2025</TableCell>
                     <TableCell>
                       <Badge
@@ -160,7 +160,8 @@ export default function KeysPage() {
 
           <Separator className="bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
 
-          <div className="bg-amber-50/80 backdrop-blur-sm border border-amber-200 rounded-lg p-4 shadow-sm">
+          {/* Tips */}
+          <div className="bg-amber-50/80 backdrop-blur-sm border border-amber-200 rounded-lg p-4 shadow-sm text-sm sm:text-base">
             <p className="text-amber-800">
               TIP: Call secured endpoints with the{" "}
               <code className="bg-amber-100 px-2 py-1 rounded text-amber-900 font-mono">
@@ -168,9 +169,7 @@ export default function KeysPage() {
               </code>{" "}
               header, See{" "}
               <Link
-                className={
-                  "underline text-amber-700 hover:text-amber-900 font-medium"
-                }
+                className="underline text-amber-700 hover:text-amber-900 font-medium"
                 href={"/docs"}
               >
                 Docs
