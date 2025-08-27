@@ -1,0 +1,1 @@
+ALTER TABLE "acitivity-project_api_keys" ALTER COLUMN "id" SET DATA TYPE text;

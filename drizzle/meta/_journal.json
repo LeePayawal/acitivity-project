@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1756270581582,
+      "tag": "0000_volatile_thunderbolt",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1756272489555,
+      "tag": "0001_small_sentry",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756280579639,
+      "tag": "0002_odd_cyclops",
+      "breakpoints": true
+    }
+  ]
+}

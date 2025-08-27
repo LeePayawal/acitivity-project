@@ -14,16 +14,16 @@ export const createTable = pgTableCreator(
   (name) => `acitivity-project_${name}`,
 );
 
-export const posts = createTable(
-  "post",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }),
+export const apiKeys = createTable("api_keys", (d) =>({
+    //id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+    id: d.text("id").primaryKey(),
+    name: d.varchar({ length: 256 }).notNull(),
+    hashedKey: d.text("hashed_key").notNull(),
+    last4: d.varchar("last4", {length: 4}).notNull(),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [index("name_idx").on(t.name)],
-);
+   revoked: d.boolean("revoked").notNull().default(false),
+   //updatedAt: d.timestamp({ withTimezone: true}).$onUpdate(( ) => new Date()),
+}));
