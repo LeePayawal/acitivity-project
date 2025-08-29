@@ -51,7 +51,7 @@ export default function KeysPage() {
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/keys", { cache: "no-store" });
-      const data: KeysApiResponse = await res.json();
+      const data = (await res.json()) as KeysApiResponse; // ✅ safe cast
       setItems(data.items ?? []);
     } catch (error) {
       console.error("Failed to load keys", error);
@@ -68,7 +68,7 @@ export default function KeysPage() {
         body: JSON.stringify({ name }),
       });
 
-      const data: KeysApiResponse = await res.json();
+      const data = (await res.json()) as KeysApiResponse; // ✅ safe cast
 
       if (res.ok && data.key && data.id) {
         setJustCreated({ key: data.key, id: data.id });
@@ -87,7 +87,7 @@ export default function KeysPage() {
   const revokeKey = useCallback(async (id: string) => {
     try {
       const res = await fetch(`/api/keys?keyId=${id}`, { method: "DELETE" });
-      const data: KeysApiResponse = await res.json();
+      const data = (await res.json()) as KeysApiResponse; // ✅ safe cast
       if (!res.ok) alert(data.error ?? "Failed to revoke");
       await load();
     } catch (error) {
@@ -100,13 +100,10 @@ export default function KeysPage() {
     void load();
   }, [load]);
 
-  // ------------------------------
-  // Render
-  // ------------------------------
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
 
-      
+      {/* Signed Out */}
       <SignedOut>
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center space-y-6 p-8">
@@ -121,11 +118,11 @@ export default function KeysPage() {
         </div>
       </SignedOut>
 
-      
+      {/* Signed In */}
       <SignedIn>
         <div className="mx-auto max-w-6xl space-y-8 p-6">
 
-          
+          {/* Header */}
           <div className="flex items-center justify-between pt-6">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
@@ -154,7 +151,7 @@ export default function KeysPage() {
             </div>
           </div>
 
-          
+          {/* Create Key Card */}
           <Card className="border-0 shadow-xl bg-gradient-to-r from-white to-blue-50/30 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
               <div className="space-y-1">
@@ -199,8 +196,8 @@ export default function KeysPage() {
               {justCreated && (            
                 <div className="rounded-lg border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 p-4 shadow-sm">
                   <div className="text-sm font-medium text-green-900 flex items-center gap-2 mb-3">
-  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-  Here is your API Key (visible once):
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    Here is your API Key (visible once):
                   </div>
                   <div className="mt-2 flex items-center gap-2 p-3 bg-white rounded-md border border-green-200">
                     <code className="text-sm break-all font-mono text-slate-800 flex-1">{justCreated.key}</code>
@@ -208,14 +205,14 @@ export default function KeysPage() {
                   </div>
                   <p className="text-green-700 mt-3 text-xs flex items-center gap-2">
                     <AlertCircle className="w-3 h-3" />
-                    Save this key securely. You won't be able to see it again.
+                    Save this key securely. You won&apos;t be able to see it again.
                   </p>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Keys Table Card */}
+          {/* Keys Table */}
           <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
             <CardHeader className="pb-6">
               <div className="flex items-center gap-3">
@@ -301,26 +298,24 @@ export default function KeysPage() {
           </Card>
 
           <Separator className="bg-gradient-to-r from-transparent via-slate-200 to-transparent"/>
-              <div className="rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/50 p-6 shadow-sm">
-              <div className="flex gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <AlertCircle className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-blue-900 mb-1">Usage Tip</h3>
-                  <p className="text-blue-800">
-                    Call secured endpoints with the <code className="bg-blue-100 text-blue-900 px-2 py-0.5 rounded text-sm font-mono">x-api-key</code> header. See{" "}
-                    <Link className="underline hover:text-blue-900 font-medium transition-colors" href={"/docs"}>
-                      Docs
-                    </Link>{" "}
-                    for implementation examples and best practices.
-                  </p>
-                </div>
+          <div className="rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/50 p-6 shadow-sm">
+            <div className="flex gap-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <AlertCircle className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-1">Usage Tip</h3>
+                <p className="text-blue-800">
+                  Call secured endpoints with the <code className="bg-blue-100 text-blue-900 px-2 py-0.5 rounded text-sm font-mono">x-api-key</code> header. See{" "}
+                  <Link className="underline hover:text-blue-900 font-medium transition-colors" href={"/docs"}>
+                    Docs
+                  </Link>{" "}
+                  for implementation examples and best practices.
+                </p>
               </div>
             </div>
+          </div>
         </div>
-
-       
       </SignedIn>
 
     </main>
