@@ -105,7 +105,7 @@ export default function DocsPage() {
                 <h3 className="font-semibold mb-2">POST /api/echo</h3>
                 <pre className="overflow-x-auto text-sm bg-slate-900 text-slate-100 p-3 rounded-md shadow-inner">
                   <code>{`curl -X POST \\
-  -H 'x-api-key: <YOUR_KEY>' \\
+                   -H 'x-api-key: <YOUR_KEY>' \\
   -H 'content-type: application/json' \\
   -d '{"hello":"world"}' \\
   ${baseUrl}/api/echo`}</code>

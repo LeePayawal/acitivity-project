@@ -1,46 +1,91 @@
-import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { insertKey, listKeys, revokeKey } from "~/server/key";
 import { CreateKeySchema, DeleteKeySchema } from "~/server/validation";
 
-export async function POST(req: NextRequest) {
-    try{
-        const body = await req.json();
-        const { name } = CreateKeySchema.parse(body);
-        const created = await insertKey(name);
-        return Response.json(created, { status: 201 });
-    }catch (e: any) {
-        return Response.json(
-            { error: e.message ?? "Invalid request "},
-            { status: 400},
-        );
-    }
-    
-}
+// GET: List all keys OR fetch a single key by id
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const keyId = searchParams.get("keyId"); // optional
 
-export async function GET(){
     const rows = await listKeys();
-    const items = rows.map((row) => ({
-    id: row.id,
-    name: row.name,
-    masked: `sk_live_...${row.last4}`,
-    createdAt: row.createdAt,
-    revoked: !!row.revoked,
-    }));
-    return Response.json({ items });
-}
-  
-  export async function DELETE(req: NextRequest){
-    try {
-        const keyId = new URL(req.url).searchParams.get("keyId");
-        const { keyId: parseId } = DeleteKeySchema.parse({ keyId });
-        const ok = await revokeKey(parseId);
-        if (!ok) return Response.json({ error: "Not found"}, { status: 404 });
-        return Response.json({ success: true });
-    } catch (e: any) {
-        return Response.json(
-            { error: e.message ?? "Invalid request"},
-            { status: 400},
-        )
+
+    if (keyId) {
+      const row = rows.find((r) => r.id === keyId);
+      if (!row) {
+        return NextResponse.json({ error: "Key not found" }, { status: 404 });
+      }
+      const item = {
+        id: row.id,
+        brand: row.brand,
+        storage: row.storage,
+        cpu: row.cpu,
+        price: row.price,
+        imageUrl: row.imageUrl,
+        masked: `sk_live_...${row.last4}`,
+        createdAt: row.createdAt,
+        revoked: !!row.revoked,
+      };
+      return NextResponse.json(item);
     }
+
+    // No keyId → return all
+    const items = rows.map((row) => ({
+      id: row.id,
+      brand: row.brand,
+      storage: row.storage,
+      cpu: row.cpu,
+      price: row.price,
+      imageUrl: row.imageUrl,
+      masked: `sk_live_...${row.last4}`,
+      createdAt: row.createdAt,
+      revoked: !!row.revoked,
+    }));
+
+    return NextResponse.json({ items });
+  } catch (err: any) {
+    console.error("GET /api/keys failed:", err);
+    return NextResponse.json({ error: "Failed to fetch keys" }, { status: 500 });
+  }
 }
 
+// POST: Create a new phone key
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { brand, storage, cpu, price, imageUrl } = CreateKeySchema.parse(body);
+
+    const created = await insertKey({ brand, storage, cpu, price, imageUrl });
+
+    return NextResponse.json(created, { status: 201 });
+  } catch (err: any) {
+    console.error("POST /api/keys failed:", err);
+    return NextResponse.json(
+      { error: err.message ?? "Invalid request" },
+      { status: 400 }
+    );
+  }
+}
+
+// DELETE: Revoke a key
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const keyId = searchParams.get("keyId");
+
+    const { keyId: parsedId } = DeleteKeySchema.parse({ keyId });
+
+    const ok = await revokeKey(parsedId);
+    if (!ok) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err: any) {
+    console.error("DELETE /api/keys failed:", err);
+    return NextResponse.json(
+      { error: err.message ?? "Invalid request" },
+      { status: 400 }
+    );
+  }
+}
