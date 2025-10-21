@@ -1,12 +1,12 @@
+// app/api/keys/route.ts
 import { NextResponse } from "next/server";
 import { insertKey, listKeys, revokeKey } from "~/server/key";
 import { CreateKeySchema, DeleteKeySchema } from "~/server/validation";
 
-// GET: List all keys OR fetch a single key by id
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const keyId = searchParams.get("keyId"); // optional
+    const keyId = searchParams.get("keyId");
 
     const rows = await listKeys();
 
@@ -17,9 +17,10 @@ export async function GET(req: Request) {
       }
       const item = {
         id: row.id,
+        type: row.type,
         brand: row.brand,
-        storage: row.storage,
-        cpu: row.cpu,
+        model: row.model,
+        size: row.size,
         price: row.price,
         imageUrl: row.imageUrl,
         masked: `sk_live_...${row.last4}`,
@@ -29,12 +30,12 @@ export async function GET(req: Request) {
       return NextResponse.json(item);
     }
 
-    // No keyId → return all
     const items = rows.map((row) => ({
       id: row.id,
+      type: row.type,
       brand: row.brand,
-      storage: row.storage,
-      cpu: row.cpu,
+      model: row.model,
+      size: row.size,
       price: row.price,
       imageUrl: row.imageUrl,
       masked: `sk_live_...${row.last4}`,
@@ -49,13 +50,14 @@ export async function GET(req: Request) {
   }
 }
 
-// POST: Create a new phone key
+// POST: Create a new shoe key
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { brand, storage, cpu, price, imageUrl } = CreateKeySchema.parse(body);
+    const parsed = CreateKeySchema.parse(body);
+    const { type, brand, model, size, price, imageUrl } = parsed;
 
-    const created = await insertKey({ brand, storage, cpu, price, imageUrl });
+    const created = await insertKey({ type, brand, model, size, price, imageUrl });
 
     return NextResponse.json(created, { status: 201 });
   } catch (err: any) {
@@ -67,7 +69,6 @@ export async function POST(req: Request) {
   }
 }
 
-// DELETE: Revoke a key
 export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url);

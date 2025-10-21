@@ -29,6 +29,27 @@
       "when": 1758098579709,
       "tag": "0003_slow_psylocke",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1758188650708,
+      "tag": "0004_violet_lightspeed",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1758189875382,
+      "tag": "0005_clammy_mac_gargan",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1758190175604,
+      "tag": "0006_fancy_leopardon",
+      "breakpoints": true
     }
   ]
 }

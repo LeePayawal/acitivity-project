@@ -1,3 +1,4 @@
+// server/key.ts
 import { createHash, randomBytes } from "crypto";
 import { db } from "./db";
 import { apiKeys } from "./db/schema";
@@ -5,7 +6,7 @@ import { desc, eq } from "drizzle-orm";
 
 const KEY_PREFIX = process.env.KEY_PREFIX ?? "sk_live_";
 
-// 🔑 Generate plain API key
+// Generate plain API key
 export function generatePlainKey(bytes: number = 24) {
   const raw = randomBytes(bytes).toString("base64url");
   const key = `${KEY_PREFIX}${raw}`;
@@ -13,16 +14,17 @@ export function generatePlainKey(bytes: number = 24) {
   return { key, last4 };
 }
 
-// 🔐 Hash helper
+// Hash helper
 export function sha256(data: string) {
   return createHash("sha256").update(data).digest("hex");
 }
 
-// ➕ Insert a phone entry with an API key
+// Insert a shoe entry with an API key
 export async function insertKey(data: {
+  type: string;
   brand: string;
-  storage: string;
-  cpu: string;
+  model: string;
+  size: string;
   price: number;
   imageUrl?: string;
 }) {
@@ -32,9 +34,10 @@ export async function insertKey(data: {
 
   await db.insert(apiKeys).values({
     id,
+    type: data.type,
     brand: data.brand,
-    storage: data.storage,
-    cpu: data.cpu,
+    model: data.model,
+    size: data.size,
     price: data.price,
     imageUrl: data.imageUrl,
     hashedKey: hashed,
@@ -44,12 +47,11 @@ export async function insertKey(data: {
   return { id, key, last4, ...data } as const;
 }
 
-// 📋 List all phone API keys
+// List all shoe API keys
 export async function listKeys() {
   return db.select().from(apiKeys).orderBy(desc(apiKeys.createdAt));
 }
 
-// 🚫 Revoke a key
 export async function revokeKey(id: string) {
   const res = await db
     .update(apiKeys)
@@ -58,7 +60,6 @@ export async function revokeKey(id: string) {
   return (res.rowCount ?? 0) > 0;
 }
 
-// ✅ Verify a key
 export async function verifyKey(apiKey: string) {
   const hashed = sha256(apiKey);
   const rows = await db
