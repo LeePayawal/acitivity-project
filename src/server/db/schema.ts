@@ -58,6 +58,7 @@ export const subscriptions = createTable(
   })
 );
 
+//dasdasdasd
 // Payment history table
 export const payments = createTable(
   "payments",
