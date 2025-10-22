@@ -447,13 +447,14 @@ export default function KeysPage() {
                   </h4>
                   <div className="bg-black rounded-lg p-4 border border-gray-800 overflow-x-auto">
                     <pre className="text-sm text-gray-300 font-mono">
-{`fetch('https://yourapi.com/api/shoes', {
-  headers: {
-    'x-api-key': 'your_api_key_here'
+{`{
+  "ok": true,
+  "tier": "silver",
+  "rateLimit": {
+    "limit": 1000,
+    "remaining": 999
   }
-})
-.then(res => res.json())
-.then(data => console.log(data));`}
+}`}
                     </pre>
                   </div>
                   <p className="text-gray-400 text-sm">

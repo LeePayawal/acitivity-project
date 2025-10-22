@@ -63,14 +63,14 @@ const quickActions = [
     description: "Learn about our endpoints",
     href: "/docs",
     icon: BookOpenText,
-    primary: false
+    primary: true
   },
   {
     title: "Test API",
     description: "Try our echo endpoint",
     href: "/api/ping",
     icon: Zap,
-    primary: false
+    primary: true
   }
 ];
 
